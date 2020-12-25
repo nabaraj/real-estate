@@ -1,4 +1,4 @@
-import { GET_PROJECTS } from './../utils/constants';
+import { GET_PROJECTS, POST_PROJECT } from './../utils/constants';
 const INITIAL_STATE = {
   projects: [],
 };
@@ -8,7 +8,12 @@ const reducer = (state = INITIAL_STATE, action) => {
       console.log(action.data, state.projects);
       return Object.assign({}, state, { projects: [...action.data] })
       break;
-
+    case POST_PROJECT:
+      let projects = [...state.projects];
+      console.log("##### ", state, projects);
+      projects.push(action.data)
+      console.log(action.data);
+      return Object.assign({}, state, { projects: [...projects] })
     default:
       break;
   }

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from 'react-router-dom';
 import ProjectCard from '../components/projectCard/ProjectCard';
 import { getProject, deleteProject, putProject } from './../redux/ProjectAction'
 
@@ -14,9 +15,11 @@ export default function Home() {
   const editProject = (e, id, type) => {
 
     e.preventDefault();
-    console.log("#### ", id, type);
     if (type === 'delete') {
       dispatch(deleteProject(id))
+    }
+    if (type === 'edit') {
+
     }
   }
 
@@ -28,7 +31,7 @@ export default function Home() {
           <h5 className="text-secondary font-17">Prominent Developers in Bangalore</h5>
         </div>
         <div className="col-sm-6 text-sm-right">
-          <button className='btn bg-gradient text-white text-uppercase rounded-pill'>+ add new developer</button>
+          <Link className='btn bg-gradient text-white text-uppercase rounded-pill' to="/create">+ add new developer</Link>
         </div>
       </div>
       {/* projects grid start */}

@@ -9,7 +9,7 @@ export default function ProjectCard({ project, editProject }) {
 
   return (
     <div className="col-sm-4 d-flex mb-4">
-      <div className="card position-relative projectCard">
+      <div className="card position-relative projectCard w-100" >
         <div className="cardOverLay rounded position-absolute flex-column align-items-center justify-content-center">
           <span
             className="btn btn-light d-flex align-items-center bg-white rounded-pill mb-3 font-15 font-weight-bold navBtn p-1"
@@ -31,7 +31,7 @@ export default function ProjectCard({ project, editProject }) {
           </span>
         </div>
         <div className="card-body d-flex align-items-start flex-wrap">
-          <div>
+          <div className="w-100">
             <div className="row card-title align-items-start">
               {logoLoaded ? (
                 <Fragment>
