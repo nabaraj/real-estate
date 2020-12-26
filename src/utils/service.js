@@ -5,8 +5,8 @@ const requestApi = {
   get: function (requestObject) {
     return axios.get(requestObject)
   },
-  post: function (requestObject) {
-    return axios.post(requestObject)
+  post: function (requestObject, data) {
+    return axios.post(requestObject, data)
   },
   put: function (requestObject) {
     return axios.put(requestObject)

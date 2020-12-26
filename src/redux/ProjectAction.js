@@ -1,49 +1,43 @@
 import requestApi from './../utils/service';
 import { GET_PROJECTS, POST_PROJECT } from './../utils/constants';
-import axios from 'axios';
+
 export function getProject() {
   return function (dispatch) {
-    requestApi.get('http://localhost:3000/items').then(res => {
-      console.log("data ", res.data);
-      dispatch({ type: GET_PROJECTS, data: res.data })
-    }).catch(err => {
-      console.log(err);
+    return new Promise((resolve, reject) => {
+      requestApi.get(process.env.REACT_APP_API_PATH).then(res => {
+        console.log("data ", res.data);
+        dispatch({ type: GET_PROJECTS, data: res.data })
+        resolve(res.data);
+      }).catch(err => {
+        console.log(err);
+        reject(err);
+      })
     })
   }
 
 };
-export function putProject() {
-  return function (dispatch) {
-    requestApi.get('http://localhost:3000/items').then(res => {
-      console.log("data ", res.data);
-      dispatch({ type: GET_PROJECTS, data: res.data })
-    }).catch(err => {
-      console.log(err);
-    })
+export function putProject(formObject) {
+  return async (dispatch) => {
+    let postObject = await requestApi.put(process.env.REACT_APP_API_PATH, formObject);
+    if (postObject) {
+      console.log('updated successfully');
+    }
+    // if (postObject) {
+    //   dispatch({ type: POST_PROJECT, data: postObject })
+    // }
   }
 };
 export function postProject(newObject) {
-  return function (dispatch) {
-    console.log("$$$$ ", newObject);
-    let requestObject = {
-      url: 'http://localhost:3000/items/',
-      data: newObject,
-      method: 'POST'
+  return async (dispatch) => {
+    let postObject = await requestApi.post(process.env.REACT_APP_API_PATH, newObject)
+    if (postObject) {
+      dispatch({ type: POST_PROJECT, data: postObject })
     }
-    // axios(requestObject).then(res => {
-    //   console.log(res.data);
-    // })
-    requestApi.post('http://localhost:3000/items/', { newObject }).then(res => {
-      console.log(res.data);
-      dispatch({ type: POST_PROJECT, data: res.data })
-    }).catch(err => {
-      console.log(err);
-    })
   }
 };
 export function deleteProject(id) {
   return async (dispatch) => {
-    let deleteObject = await requestApi.get('http://localhost:3000/items/' + id);
+    let deleteObject = await requestApi.get(process.env.REACT_APP_API_PATH + id);
     console.log('# ', deleteObject);
   }
 }

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CreateProject.scss';
 import { useSelector, useDispatch } from "react-redux";
-import { postProject } from "./../redux/ProjectAction";
+import { postProject, putProject, getProject } from "./../redux/ProjectAction";
 
 const formInitialValues = {
   logo: '',
@@ -13,9 +13,38 @@ const formInitialValues = {
   location: '',
   imgURL: ''
 }
-export default function CreateProject() {
-  const [formData, setFormData] = useState(formInitialValues)
+export default function CreateProject({ match }) {
+  const [formData, setFormData] = useState(formInitialValues);
+  const [submitType, setSubmitType] = useState('create')
+  const { projects } = useSelector(state => state.projectReducer);
+
   const dispatch = useDispatch();
+  console.log(match.params.id);
+  useEffect(async () => {
+    if (match.params.id) {
+      let id = match.params.id;
+      if (projects === 'loading') {
+        dispatch(getProject()).then(res => {
+          let filteredProject = res.filter(item => {
+            return item.id === parseInt(id);
+          })
+          if (filteredProject.length > 0) {
+            setSubmitType('edit')
+            setFormData(filteredProject[0]);
+          }
+        })
+      } else {
+        let filteredProject = projects.filter(item => {
+          return item.id === parseInt(id);
+        })
+        if (filteredProject.length > 0) {
+          setSubmitType('edit')
+          setFormData(filteredProject[0]);
+        }
+      }
+
+    }
+  })
 
   const updateForm = (e) => {
     let name = e.target.name;
@@ -29,6 +58,7 @@ export default function CreateProject() {
     setFormData(formValues);
   }
   return (
+
     <div className="container createForm mt-5" style={{ maxWidth: '300px' }}>
       <h6><span className="text-secondary">Featured</span> <span className="text-dark">Developers</span></h6>
       <label className="form-control-label"> Developer Logo Image URL</label>
@@ -47,7 +77,7 @@ export default function CreateProject() {
       <input type="text" name="location" value={formData['location']} onChange={updateForm} className="form-control form-rounded" />
       <label className="form-control-label"> Project image URL</label>
       <input type="text" name="imgURL" value={formData['imgURL']} onChange={updateForm} className="form-control form-rounded" />
-      <button type="button" className="btn btn-primary bg-gradient" onClick={() => dispatch(postProject(formData))}>UPDATE</button>
-    </div>
+      <button type="button" className="btn btn-primary bg-gradient" onClick={() => submitType === 'create' ? dispatch(postProject(formData)) : dispatch(putProject(formData))}>UPDATE</button>
+    </div >
   )
 }

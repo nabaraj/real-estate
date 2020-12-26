@@ -1,15 +1,18 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import ProjectCard from '../components/projectCard/ProjectCard';
 import { getProject, deleteProject, putProject } from './../redux/ProjectAction'
 
 export default function Home() {
   const { projects } = useSelector(state => state.projectReducer);
   const dispatch = useDispatch();
-
+  let history = useHistory();
   useEffect(() => {
-    dispatch(getProject());
+    console.log(dispatch(getProject()));
+    dispatch(getProject()).then(res => {
+      console.log("##### ", res);
+    });
   }, []);
 
   const editProject = (e, id, type) => {
@@ -19,13 +22,13 @@ export default function Home() {
       dispatch(deleteProject(id))
     }
     if (type === 'edit') {
-
+      history.push(`/edit/${id}`)
     }
   }
 
   return (
     <div className="container mt-5">
-      <div className="row mb-5">
+      {projects !== 'loading' && (<div className="row mb-5">
         <div className="col-sm-6">
           <h3 className="mb-1"><span className="text-secondary">Featured</span> <span className="text-dark">Developers</span></h3>
           <h5 className="text-secondary font-17">Prominent Developers in Bangalore</h5>
@@ -33,10 +36,14 @@ export default function Home() {
         <div className="col-sm-6 text-sm-right">
           <Link className='btn bg-gradient text-white text-uppercase rounded-pill' to="/create">+ add new developer</Link>
         </div>
-      </div>
+      </div>)}
       {/* projects grid start */}
+
       <div className="row">
-        {projects.length > 0 && projects.map(project => (
+        {projects === 'loading' && (<div className="text-center w-100"><div className="spinner-border " role="status">
+          <span className="sr-only">Loading...</span>
+        </div></div>)}
+        {projects !== 'loading' && projects.length > 0 && projects.map(project => (
           <ProjectCard
             editProject={editProject}
             key={project.id}
