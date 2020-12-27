@@ -15,36 +15,45 @@ const formInitialValues = {
 }
 export default function CreateProject({ match }) {
   const [formData, setFormData] = useState(formInitialValues);
-  const [submitType, setSubmitType] = useState('create')
+  const [submitType, setSubmitType] = useState('create');
+  const [editIndex, setIndex] = useState(-1);
   const { projects } = useSelector(state => state.projectReducer);
 
   const dispatch = useDispatch();
   useEffect(() => {
     if (match.params.id) {
       let id = match.params.id;
+      let currentIndex = -1;
       if (projects === 'loading') {
         dispatch(getProject()).then(res => {
-          let filteredProject = res.filter(item => {
-            return item.id === parseInt(id);
+          let filteredProject = res.filter((item, index) => {
+            if (item.id === parseInt(id)) {
+              currentIndex = index;
+              return item;
+            }
           })
           if (filteredProject.length > 0) {
-            setEditForm(filteredProject[0])
+            setEditForm(filteredProject[0], currentIndex)
           }
         })
       } else {
-        let filteredProject = projects.filter(item => {
-          return item.id === parseInt(id);
+        let filteredProject = projects.filter((item, index) => {
+          if (item.id === parseInt(id)) {
+            currentIndex = index;
+            return item;
+          }
         })
         if (filteredProject.length > 0) {
-          setEditForm(filteredProject[0])
+          setEditForm(filteredProject[0], currentIndex)
         }
       }
 
     }
   }, [match.params.id])
-  const setEditForm = (formObject) => {
+  const setEditForm = (formObject, index) => {
     setSubmitType('edit')
-    setFormData(formObject);
+    setFormData(formObject, index);
+    setIndex(index);
   }
   const postFormData = (formData) => {
     dispatch(postProject(formData))
@@ -80,7 +89,7 @@ export default function CreateProject({ match }) {
       <input type="text" name="location" value={formData['location']} onChange={updateForm} className="form-control form-rounded" />
       <label className="form-control-label"> Project image URL</label>
       <input type="text" name="imgURL" value={formData['imgURL']} onChange={updateForm} className="form-control form-rounded" />
-      <button type="button" className="btn btn-primary bg-gradient" onClick={() => submitType === 'create' ? postFormData(formData) : dispatch(putProject(formData))}>UPDATE</button>
+      <button type="button" className="btn btn-primary bg-gradient" onClick={() => submitType === 'create' ? postFormData(formData) : dispatch(putProject(formData, editIndex))}>UPDATE</button>
     </div >
   )
 }

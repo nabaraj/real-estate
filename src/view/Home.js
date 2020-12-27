@@ -9,11 +9,10 @@ export default function Home() {
   const dispatch = useDispatch();
   let history = useHistory();
   useEffect(() => {
-    console.log(dispatch(getProject()));
-    dispatch(getProject()).then(res => {
-      console.log("##### ", res);
-    });
-  }, []);
+    if (projects === 'loading') {
+      dispatch(getProject());
+    }
+  }, [projects]);
 
   const editProject = (e, id, type) => {
 
@@ -62,7 +61,7 @@ export default function Home() {
         </div>
       </div>
       <div className="row">
-        {projects !== 'loading' && projects.length > 0 && projects.map(project => (<div className="col-sm-4">
+        {projects !== 'loading' && projects.length > 0 && projects.map(project => (<div className="col-sm-4" key={project.id}>
           <div className="card mb-3">
             <div className="row no-gutters">
               <div className="col-md-4">

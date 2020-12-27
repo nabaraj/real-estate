@@ -5,7 +5,6 @@ export function getProject() {
   return function (dispatch) {
     return new Promise((resolve, reject) => {
       requestApi.get(process.env.REACT_APP_API_PATH).then(res => {
-        console.log("data ", res.data);
         dispatch({ type: GET_PROJECTS, data: res.data })
         resolve(res.data);
       }).catch(err => {
@@ -16,13 +15,12 @@ export function getProject() {
   }
 
 };
-export function putProject(formObject) {
-  console.log(formObject);
+export function putProject(formObject, currentIndex) {
   return async (dispatch) => {
-    let postObject = await requestApi.put(`${process.env.REACT_APP_API_PATH}/${formObject.id}`, formObject);
-    if (postObject) {
+    let putObject = await requestApi.put(`${process.env.REACT_APP_API_PATH}/${formObject.id}`, formObject);
+    if (putObject) {
       console.log('updated successfully');
-      dispatch({ type: PUT_PROJECT, data: postObject, id: formObject.id })
+      dispatch({ type: PUT_PROJECT, data: putObject.data, id: formObject.id, currentIndex })
     }
   }
 };
