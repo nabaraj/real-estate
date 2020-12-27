@@ -19,8 +19,7 @@ export default function CreateProject({ match }) {
   const { projects } = useSelector(state => state.projectReducer);
 
   const dispatch = useDispatch();
-  console.log(match.params.id);
-  useEffect(async () => {
+  useEffect(() => {
     if (match.params.id) {
       let id = match.params.id;
       if (projects === 'loading') {
@@ -29,8 +28,7 @@ export default function CreateProject({ match }) {
             return item.id === parseInt(id);
           })
           if (filteredProject.length > 0) {
-            setSubmitType('edit')
-            setFormData(filteredProject[0]);
+            setEditForm(filteredProject[0])
           }
         })
       } else {
@@ -38,14 +36,20 @@ export default function CreateProject({ match }) {
           return item.id === parseInt(id);
         })
         if (filteredProject.length > 0) {
-          setSubmitType('edit')
-          setFormData(filteredProject[0]);
+          setEditForm(filteredProject[0])
         }
       }
 
     }
-  })
-
+  }, [match.params.id])
+  const setEditForm = (formObject) => {
+    setSubmitType('edit')
+    setFormData(formObject);
+  }
+  const postFormData = (formData) => {
+    dispatch(postProject(formData))
+    setFormData(formInitialValues);
+  }
   const updateForm = (e) => {
     let name = e.target.name;
     let value = e.target.value;
@@ -58,7 +62,6 @@ export default function CreateProject({ match }) {
     setFormData(formValues);
   }
   return (
-
     <div className="container createForm mt-5" style={{ maxWidth: '300px' }}>
       <h6><span className="text-secondary">Featured</span> <span className="text-dark">Developers</span></h6>
       <label className="form-control-label"> Developer Logo Image URL</label>
@@ -77,7 +80,7 @@ export default function CreateProject({ match }) {
       <input type="text" name="location" value={formData['location']} onChange={updateForm} className="form-control form-rounded" />
       <label className="form-control-label"> Project image URL</label>
       <input type="text" name="imgURL" value={formData['imgURL']} onChange={updateForm} className="form-control form-rounded" />
-      <button type="button" className="btn btn-primary bg-gradient" onClick={() => submitType === 'create' ? dispatch(postProject(formData)) : dispatch(putProject(formData))}>UPDATE</button>
+      <button type="button" className="btn btn-primary bg-gradient" onClick={() => submitType === 'create' ? postFormData(formData) : dispatch(putProject(formData))}>UPDATE</button>
     </div >
   )
 }

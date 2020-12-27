@@ -1,5 +1,5 @@
 import requestApi from './../utils/service';
-import { GET_PROJECTS, POST_PROJECT } from './../utils/constants';
+import { GET_PROJECTS, POST_PROJECT, PUT_PROJECT } from './../utils/constants';
 
 export function getProject() {
   return function (dispatch) {
@@ -17,14 +17,13 @@ export function getProject() {
 
 };
 export function putProject(formObject) {
+  console.log(formObject);
   return async (dispatch) => {
-    let postObject = await requestApi.put(process.env.REACT_APP_API_PATH, formObject);
+    let postObject = await requestApi.put(`${process.env.REACT_APP_API_PATH}/${formObject.id}`, formObject);
     if (postObject) {
       console.log('updated successfully');
+      dispatch({ type: PUT_PROJECT, data: postObject, id: formObject.id })
     }
-    // if (postObject) {
-    //   dispatch({ type: POST_PROJECT, data: postObject })
-    // }
   }
 };
 export function postProject(newObject) {

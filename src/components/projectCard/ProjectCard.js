@@ -80,7 +80,7 @@ export default function ProjectCard({ project, editProject }) {
                 <span className="font-weight-bold text-white d-block">{project.title}</span>
                 <span className="text-white">{project.location}</span>
               </div>
-              <img src={project.imgURL} onError={() => setProjectImageLoaded(false)} className="img-fluid rounded" />
+              <img src={project.imgURL} onError={() => setProjectImageLoaded(false)} title={project.imgTitle} className="img-fluid rounded" />
             </div>) : ""}
           </div>
         </div>
